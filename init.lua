@@ -20,18 +20,16 @@ mytimer:register(1000, tmr.ALARM_AUTO, function()
                 t = cjson.decode(data) --cjson used to convert data to lua table
                 for k, v in pairs(t) 
                     do print(k, v) 
-                    end
-                    if (t["name"] == "on") then 
-                        gpio.write(led, gpio.HIGH) --if name is on, D3 high
-                    elseif (t["name"] == "off") then 
-                        gpio.write(led, gpio.LOW) 
-                    end --else D3 low
                 end
-            end)
-            tmr.stop(1) --stop timer
-        end
-    end)
-    mytimer:interval(200) --set interval as 200 ms
-    mytimer:start() 
-
-   
+                if (t["name"] == "on") then
+                    gpio.write(led, gpio.HIGH) --if name is on, D3 high
+                elseif (t["name"] == "off") then 
+                    gpio.write(led, gpio.LOW) 
+                end --else D3 low
+            end
+        end)
+        mr.stop(1) --stop timer
+    end
+end)
+mytimer:interval(200) --set interval as 200 ms
+mytimer:start() 
