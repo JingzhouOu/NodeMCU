@@ -28,7 +28,7 @@ mytimer:register(1000, tmr.ALARM_AUTO, function()
                 end --else D3 low
             end
         end)
-        mr.stop(1) --stop timer
+        tmr.stop(1) --stop timer
     end
 end)
 mytimer:interval(200) --set interval as 200 ms
