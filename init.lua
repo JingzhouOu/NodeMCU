@@ -4,11 +4,24 @@ wifi.setmode(wifi.STATION) --set as station mode
 wifi.sta.config("Demian", "ustb1994") --connect to wifi router
 wifi.sta.connect() --give access to Internet
 print(wifi.sta.getip()) --print out IP
-led = 3 --D3 port controlled
-gpio.mode(led, gpio.OUTPUT) --set gpio as OUTPUT 
-local mytimer = tmr.create() --create timer
-mytimer:register(1000, tmr.ALARM_AUTO, function()
-    if (wifi.sta.getip() == nil) then --make sure ip is got
+led1 = 3 --D3 port controlled
+led2 = 1
+sensor = 2
+gpio.mode(led1, gpio.OUTPUT) --set gpio as OUTPUT\
+gpio.mode(led2, gpio.OUTPUT) --set gpio as OUTPUT
+gpio.mode(sensor, gpio.INPUT) 
+mytimer = tmr.create() --create timer
+mytimer:register(200, tmr.ALARM_AUTO, function()
+
+ print(gpio.read(sensor))
+    if (gpio.read(sensor) == 1) then --make sure ip is got
+        gpio.write(led2, gpio.HIGH)
+    elseif (gpio.read(sensor) == 0) then
+        gpio.write(led2, gpio.LOW)
+        tmr.stop(1) --stop timer
+    end
+
+if (wifi.sta.getip() == nil) then --make sure ip is got
         print('Waiting for IP ...')
     else
         print('IP is ' .. wifi.sta.getip())
@@ -18,13 +31,10 @@ mytimer:register(1000, tmr.ALARM_AUTO, function()
             else
                 print(code, data)
                 t = cjson.decode(data) --cjson used to convert data to lua table
-                for k, v in pairs(t) 
-                    do print(k, v) 
-                end
-                if (t["name"] == "on") then
-                    gpio.write(led, gpio.HIGH) --if name is on, D3 high
+                if (t["name"] == "on") then 
+                    gpio.write(led1, gpio.HIGH) --if name is on, D3 high
                 elseif (t["name"] == "off") then 
-                    gpio.write(led, gpio.LOW) 
+                    gpio.write(led1, gpio.LOW) 
                 end --else D3 low
             end
         end)
