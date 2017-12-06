@@ -1,0 +1,20 @@
+--read temperature sensro TMP36GZ and convert it to Celsius
+if adc.force_init_mode(adc.INIT_ADC)
+then
+  node.restart()
+  return -- don't bother continuing, the restart is scheduled
+end
+
+
+tmp = 0 --adc input
+mytimer = tmr.create() --create timer
+mytimer:register(200, tmr.ALARM_AUTO, function()
+
+ voltage = adc.read(tmp)
+ voltage = voltage * 3.3 / 1024.0; 
+ temperatureC = (voltage - 0.5) * 100
+ print(temperatureC)
+ tmr.stop(1) --stop timer
+end)
+mytimer:interval(200) --set interval as 200 ms
+mytimer:start() 
