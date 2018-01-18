@@ -15,6 +15,11 @@ const char* WIFI_PASS = "ustb1994";  //wifi password
 
 void servoControl();
 void httpControl();
+void pinControl();
+
+String ledStatus;
+String servoStatus;
+HTTPClient http;  //Declare an object of class HTTPClient
 
  
 
@@ -29,8 +34,9 @@ void setup() {
 
 //----- Loop routine. --------------------------
 void loop() {
-
   httpControl();
+  pinControl();
+  
 }
 
 void wifiSetup() 
@@ -58,21 +64,34 @@ void wifiSetup()
    Serial.printf("[WIFI] STATION Mode, SSID: %s, IP address: %s\n", WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
    Serial.println();
 }
-
+/*
+ * Request for API and parson response to JSON
+ */
 void httpControl()
 {
-  HTTPClient http;  //Declare an object of class HTTPClient
+
   http.begin("http://39.106.107.244:8080/springTest/user/id/1");  //Specify request destination
   int httpCode = http.GET();  //Send the request
-  if (httpCode > 0) { //Check the returning code
+  if (httpCode > 0) 
+  { //Check the returning code
     String response = http.getString();   //Get the request response payload
     Serial.println(response);  //Print the response payload
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& jsonResponse = jsonBuffer.parseObject(response);  
-    String ledStatus = jsonResponse["name"];
-    String servoStatus = jsonResponse["email"];
-    Serial.println(servoStatus);
-    if (ledStatus == "on")
+    ledStatus = jsonResponse["name"].asString();;
+    servoStatus = jsonResponse["email"].asString();; 
+  }
+ 
+  http.end();   //Close connection
+ 
+}
+/*
+ * Control pins according to response data
+ */
+void pinControl()
+{
+  Serial.println(servoStatus);  
+  if (ledStatus == "on")
     {
       digitalWrite(LED, HIGH);
     }
@@ -95,12 +114,6 @@ void httpControl()
         servoMain.write(0);  // Turn Servo Left to 45 degrees
       }         
     }
-    
-  }
- 
-  http.end();   //Close connection
-  delay(5); //Send a request every * miliseconds
- 
 }
 
 void servoControl()
