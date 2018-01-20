@@ -33,14 +33,14 @@ mytimer:register(300, tmr.ALARM_AUTO, function()
             else
                 print(code, data)
                 t = cjson.decode(data) --cjson used to convert data to lua table
-                if (t["name"] == "on") then 
+                if (t["Light"] == "on") then 
                     gpio.write(led1, gpio.HIGH) --if name is on, D3 high
-                elseif (t["name"] == "off") then 
+                elseif (t["Light"] == "off") then 
                     gpio.write(led1, gpio.LOW) 
                 end --else D3 low   
-                if (t["email"] == "on") then 
+                if (t["Stove"] == "on") then 
                     gpio.write(stove, gpio.HIGH) --if name is on, D3 high
-                elseif (t["email"] == "off") then 
+                elseif (t["Stove"] == "off") then 
                     gpio.write(stove, gpio.LOW) 
                 end --else D6 low             
             end
