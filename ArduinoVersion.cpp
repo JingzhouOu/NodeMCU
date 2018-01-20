@@ -83,6 +83,7 @@ void httpControl()
   }
  
   http.end();   //Close connection
+  delay(100);
  
 }
 /*
