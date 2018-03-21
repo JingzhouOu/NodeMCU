@@ -77,7 +77,7 @@ void httpControl()
   double temp = mlx.readObjectTempC();
   String tempurl = "http://39.106.107.244:8080/springTest/led/v1?id=3&name=";
   tempurl = tempurl + temp;
-  if (temp > 30) {
+  if (temp > 100) {
     http.begin(tempurl);  //Specify request destination
     int httpCode = http.GET();  //Send the request   
   }
